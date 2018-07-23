@@ -7,5 +7,5 @@
 (use-package flymake-ktlint
   :ensure t
   :config
-  (setq ktlint-flymake-args '("-android")))
+  (setq ktlint-flymake-args '("--android")))
   #+end_src
