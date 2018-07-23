@@ -6,7 +6,7 @@
 ;; Maintainer: James Nguyen <james@jojojames.com>
 ;; URL: https://github.com/jojojames/flymake-ktlint
 ;; Version: 1.0
-;; Package-Requires: ((emacs "26.1") (flymake "0.3"))
+;; Package-Requires: ((emacs "26.1"))
 ;; Keywords: languages ktlint
 
 ;; This file is not part of GNU Emacs.
