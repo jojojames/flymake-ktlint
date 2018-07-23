@@ -50,17 +50,17 @@
 
 ;;; Flymake
 
-(defcustom ktlint-flymake-executable "ktlint"
+(defcustom flymake-ktlint-executable "ktlint"
   "Executable for ktlint."
   :type 'string
   :group 'flymake-ktlint)
 
-(defcustom ktlint-flymake-args nil
+(defcustom flymake-ktlint-args nil
   "Args to pass to ktlint."
   :type 'list
   :group 'flymake-ktlint)
 
-(defvar-local ktlint-flymake--lint-process nil
+(defvar-local flymake-ktlint--lint-process nil
   "Buffer-local process started for linting the buffer.")
 
 ;;;###autoload
@@ -70,23 +70,23 @@
   (add-hook 'kotlin-mode-hook
             (lambda ()
               (add-hook
-               'flymake-diagnostic-functions 'ktlint-flymake-lint nil t))))
+               'flymake-diagnostic-functions 'flymake-ktlint-lint nil t))))
 
-(defun ktlint-flymake-lint (report-fn &rest _args)
+(defun flymake-ktlint-lint (report-fn &rest _args)
   "A Flymake backend for ktlint check.
 
 REPORT-FN will be called when ktlint process finishes."
-  (when (and ktlint-flymake--lint-process
-             (process-live-p ktlint-flymake--lint-process))
-    (kill-process ktlint-flymake--lint-process))
+  (when (and flymake-ktlint--lint-process
+             (process-live-p flymake-ktlint--lint-process))
+    (kill-process flymake-ktlint--lint-process))
   (let ((source-buffer (current-buffer))
-        (output-buffer (generate-new-buffer " *ktlint-flymake-lint*")))
-    (setq ktlint-flymake--lint-process
+        (output-buffer (generate-new-buffer " *flymake-ktlint-lint*")))
+    (setq flymake-ktlint--lint-process
           (make-process
-           :name "ktlint-flymake-lint"
+           :name "flymake-ktlint-lint"
            :buffer output-buffer
-           :command `(,ktlint-flymake-executable
-                      ,@ktlint-flymake-args
+           :command `(,flymake-ktlint-executable
+                      ,@flymake-ktlint-args
                       ,buffer-file-name)
            :connection-type 'pipe
            :sentinel
@@ -96,14 +96,14 @@ REPORT-FN will be called when ktlint process finishes."
                    (cond
                     ((not (and (buffer-live-p source-buffer)
                                (eq proc (with-current-buffer source-buffer
-                                          ktlint-flymake--lint-process))))
+                                          flymake-ktlint--lint-process))))
                      (flymake-log :warning
                                   "byte-compile process %s obsolete" proc))
                     ((zerop (process-exit-status proc))
                      ;; No ktlint errors/warnings..
                      (funcall report-fn nil))
                     ((= 1 (process-exit-status proc))
-                     (ktlint-flymake--lint-done report-fn
+                     (flymake-ktlint--lint-done report-fn
                                                 source-buffer
                                                 output-buffer))
                     (:error
@@ -114,7 +114,7 @@ REPORT-FN will be called when ktlint process finishes."
                  (kill-buffer output-buffer))))))))
 
 ;; Helpers
-(defun ktlint-flymake--lint-done (report-fn
+(defun flymake-ktlint--lint-done (report-fn
                                   source-buffer
                                   output-buffer)
   "Process ktlint result and call REPORT-FN.
@@ -136,7 +136,7 @@ OUTPUT-BUFFER is the result of running ktlint on SOURCE-BUFFER."
                             (line (string-to-number (nth 1 split)))
                             (column (string-to-number (nth 2 split)))
                             (message (string-trim (nth 3 split)))
-                            (point (ktlint-flymake--find-point source-buffer line column)))
+                            (point (flymake-ktlint--find-point source-buffer line column)))
                        (flymake-make-diagnostic
                         source-buffer
                         (1- point)
@@ -145,7 +145,7 @@ OUTPUT-BUFFER is the result of running ktlint on SOURCE-BUFFER."
                         message)))
                    (split-string (buffer-string) "\n" t))))))))
 
-(defun ktlint-flymake--find-point (source-buffer line column)
+(defun flymake-ktlint--find-point (source-buffer line column)
   "Return point given LINE and COLUMN in SOURCE-BUFFER."
   (with-current-buffer source-buffer
     (save-excursion
