@@ -56,9 +56,7 @@
   :group 'flymake-ktlint)
 
 (defcustom ktlint-flymake-args nil
-  "Args to pass to ktlint.
-
-e.g. \(setq ktlint-flymake-args \'\(\"--android\"\)\)"
+  "Args to pass to ktlint."
   :type 'list
   :group 'flymake-ktlint)
 
@@ -75,7 +73,9 @@ e.g. \(setq ktlint-flymake-args \'\(\"--android\"\)\)"
                'flymake-diagnostic-functions 'ktlint-flymake-lint nil t))))
 
 (defun ktlint-flymake-lint (report-fn &rest _args)
-  "A Flymake backend for ktlint check."
+  "A Flymake backend for ktlint check.
+
+REPORT-FN will be called when ktlint process finishes."
   (when (and ktlint-flymake--lint-process
              (process-live-p ktlint-flymake--lint-process))
     (kill-process ktlint-flymake--lint-process))
@@ -117,7 +117,10 @@ e.g. \(setq ktlint-flymake-args \'\(\"--android\"\)\)"
 (defun ktlint-flymake--lint-done (report-fn
                                   source-buffer
                                   output-buffer)
-  "Process ktlint result and call REPORT-FN."
+  "Process ktlint result and call REPORT-FN.
+
+SOURCE-BUFFER is the buffer to apply flymake to.
+OUTPUT-BUFFER is the result of running ktlint on SOURCE-BUFFER."
   (with-current-buffer
       source-buffer
     (save-excursion
@@ -143,7 +146,7 @@ e.g. \(setq ktlint-flymake-args \'\(\"--android\"\)\)"
                    (split-string (buffer-string) "\n" t))))))))
 
 (defun ktlint-flymake--find-point (source-buffer line column)
-  "Return point given LINE and COLUMN."
+  "Return point given LINE and COLUMN in SOURCE-BUFFER."
   (with-current-buffer source-buffer
     (save-excursion
       (goto-char (point-min))
