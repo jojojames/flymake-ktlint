@@ -67,10 +67,12 @@
 (defun flymake-ktlint-setup ()
   "Set up Flymake for Ktlint."
   (interactive)
-  (add-hook 'kotlin-mode-hook
-            (lambda ()
-              (add-hook
-               'flymake-diagnostic-functions 'flymake-ktlint-lint nil t))))
+  (add-hook 'kotlin-mode-hook #'flymake-ktlint-add-hook))
+
+;;;###autoload
+(defun flymake-ktlint-add-hook ()
+  "Add `flymake-ktlint-lint' to `flymake-diagnostic-functions'."
+  (add-hook 'flymake-diagnostic-functions 'flymake-ktlint-lint nil t))
 
 (defun flymake-ktlint-lint (report-fn &rest _args)
   "A Flymake backend for ktlint check.
