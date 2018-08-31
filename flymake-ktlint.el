@@ -36,18 +36,6 @@
 (require 'cl-lib)
 (eval-when-compile (require 'subr-x))
 
-;; Compatibility
-(eval-and-compile
-  (with-no-warnings
-    (if (version< emacs-version "26")
-        (progn
-          (defalias 'flymake-ktlint-if-let* #'if-let)
-          (defalias 'flymake-ktlint-when-let* #'when-let)
-          (function-put #'flymake-ktlint-if-let* 'lisp-indent-function 2)
-          (function-put #'flymake-ktlint-when-let* 'lisp-indent-function 1))
-      (defalias 'flymake-ktlint-if-let* #'if-let*)
-      (defalias 'flymake-ktlint-when-let* #'when-let*))))
-
 ;;; Flymake
 
 (defcustom flymake-ktlint-executable "ktlint"
