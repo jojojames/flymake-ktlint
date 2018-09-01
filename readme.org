@@ -1,10 +1,7 @@
 #+TITLE: Flymake Ktlint
 
-* flymake-ktlint
-  Flymake extension for Ktlint.
-
   [[https://melpa.org/#/flymake-ktlint][file:https://melpa.org/packages/flymake-ktlint-badge.svg]]
-
+  Flymake extension for Ktlint.
 * Install
   #+begin_src emacs-lisp :tangle yes
 (use-package flymake-ktlint
